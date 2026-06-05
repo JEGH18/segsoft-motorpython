@@ -18,12 +18,18 @@ class ConfigExecutor(RuleExecutor):
       }
     """
 
+    _CONFIG_EXTENSIONS = {
+        ".yml", ".yaml", ".properties", ".env", ".ini", ".cfg", ".conf", ".toml",
+    }
+
     def execute(self, payload: dict, artifact_path: str) -> list:
         checks = payload.get("checks", [])
         if not checks:
             return []
 
         ext = os.path.splitext(artifact_path)[1].lower()
+        if ext not in self._CONFIG_EXTENSIONS:
+            return []
         try:
             config = self._load_config(artifact_path, ext)
         except Exception:
