@@ -1,0 +1,25 @@
+name: Validate Engine
+
+# Este repo (segsoft-motorpython) es solo el motor -- ya no vive anidado
+# dentro de un monorepo, así que no hace falta filtrar por paths ni fijar
+# working-directory: la raíz del repo YA es lo que antes era
+# backend/engine-python/.
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate precision/recall thresholds
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+      - name: Install dependencies
+        run: pip install .[dev]
+      - name: Run validation suite
+        run: pytest tests/validation/ -v
