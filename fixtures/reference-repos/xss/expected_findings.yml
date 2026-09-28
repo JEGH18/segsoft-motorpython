@@ -1,0 +1,21 @@
+findings:
+  - file: src/App.jsx
+    line: 4
+    category: XSS
+    severity: HIGH
+    rule_id: 0db11bf3-11e7-4d7e-bb4b-a93ade8c45e9
+  - file: src/App.jsx
+    line: 5
+    category: XSS
+    severity: HIGH
+    rule_id: 4de5c3c3-20a4-40a5-aed0-fc3718a7c6d2
+  - file: templates/views.py
+    line: 7
+    category: XSS
+    severity: HIGH
+    rule_id: 9505314e-8de3-4a64-92a2-853d82202d0e
+  - file: config/webapp.yml
+    line: null
+    category: XSS
+    severity: MEDIUM
+    rule_id: b67e8a2f-bec6-4425-80da-94af184eebd1

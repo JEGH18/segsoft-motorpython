@@ -1,0 +1,20 @@
+server:
+  ssl:
+    enabled: true
+
+mfa:
+  required:
+    roles:
+      - SECURITY_ADMIN
+
+security:
+  headers:
+    content-security-policy: "default-src 'self'"
+
+dependency:
+  update:
+    maxAgeDays: 14
+
+artifact:
+  checksum:
+    verify: sha256

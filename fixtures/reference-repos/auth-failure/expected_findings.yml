@@ -1,0 +1,27 @@
+findings:
+  - file: src/main/java/com/example/AuthController.java
+    line: 9
+    category: AUTHENTICATION_FAILURE
+    severity: CRITICAL
+    rule_id: 511a830a-0828-497f-9831-3eb481c84608
+  - file: src/main/java/com/example/AuthController.java
+    line: 12
+    category: AUTHENTICATION_FAILURE
+    severity: HIGH
+    rule_id: 5f44e0a7-d94c-44a3-9992-3e4886e013c1
+  - file: src/main/java/com/example/AuthController.java
+    line: 14
+    category: AUTHENTICATION_FAILURE
+    severity: HIGH
+    rule_id: 2bf8c4e6-6683-4361-947c-157e4a9f761d
+  - file: app/auth.py
+    line: 5
+    category: AUTHENTICATION_FAILURE
+    severity: CRITICAL
+    rule_id: 69b49904-8419-4ee0-b514-77b1dfbe4b58
+  # CONFIG_CHECK no reporta número de línea (revisa el archivo completo).
+  - file: src/main/resources/application.yml
+    line: null
+    category: AUTHENTICATION_FAILURE
+    severity: CRITICAL
+    rule_id: 4a659b84-f37b-4421-8cad-3d4b347de2b0

@@ -1,0 +1,23 @@
+findings:
+  - file: src/main/java/com/example/ReportController.java
+    line: 14
+    category: SQL_INJECTION
+    severity: HIGH
+    rule_id: cc24c7f5-cf71-43ef-aa09-a92611bcb9a5
+  - file: src/main/java/com/example/ReportController.java
+    line: 19
+    category: SQL_INJECTION
+    severity: MEDIUM
+    rule_id: c32419fe-bf48-4176-aa72-cea341e51d89
+  - file: app/reports.py
+    line: 5
+    category: SQL_INJECTION
+    severity: CRITICAL
+    rule_id: d5a1d8a6-c05c-4547-8d65-f194775d5036
+  # La misma línea también contiene "SELECT * FROM" dentro del f-string,
+  # así que la regla MEDIUM dispara ahí también -- es un caso real, no un error.
+  - file: app/reports.py
+    line: 5
+    category: SQL_INJECTION
+    severity: MEDIUM
+    rule_id: c32419fe-bf48-4176-aa72-cea341e51d89

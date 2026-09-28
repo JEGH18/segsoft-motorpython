@@ -1,0 +1,5 @@
+# Fixture "sano" -- ningún hallazgo esperado. Cada línea del código fuente
+# es el equivalente seguro de un patrón vulnerable real (ver comentario en
+# UserService.java), a propósito, para que un 0 en este repo mida precisión
+# real y no sea simplemente "no había nada que encontrar".
+findings: []

@@ -1,0 +1,19 @@
+server:
+  ssl:
+    enabled: true
+
+security:
+  headers:
+    content-security-policy: "default-src 'self'"
+
+# mfa.required.roles se deja ausente a propósito (es el hallazgo esperado de
+# este fixture). Las otras claves must_exist sí se definen para que no
+# aparezcan como "faltantes" en este mismo archivo -- ese no es lo que este
+# repo está probando.
+artifact:
+  checksum:
+    verify: sha256
+
+dependency:
+  update:
+    maxAgeDays: 14

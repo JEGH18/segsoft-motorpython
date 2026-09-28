@@ -1,0 +1,31 @@
+findings:
+  - file: src/main/java/com/example/config/AppConfig.java
+    line: 10
+    category: INSECURE_DATA_HANDLING
+    severity: CRITICAL
+    rule_id: eb0aa5ec-f941-4e07-bc09-8c43bb886a77
+  - file: src/main/java/com/example/config/AppConfig.java
+    line: 12
+    category: INSECURE_DATA_HANDLING
+    severity: CRITICAL
+    rule_id: e7476845-c0f5-4134-b242-ab0bd44560de
+  - file: src/main/java/com/example/config/AppConfig.java
+    line: 19
+    category: INSECURE_DATA_HANDLING
+    severity: CRITICAL
+    rule_id: 026a118c-c6d8-4cc0-8c8b-78f0c8b83a8c
+  - file: src/main/java/com/example/config/AppConfig.java
+    line: 23
+    category: INSECURE_DATA_HANDLING
+    severity: HIGH
+    rule_id: e99cd722-bae8-48b4-be37-f566d5240d79
+  - file: src/main/resources/application.properties
+    line: null
+    category: INSECURE_DATA_HANDLING
+    severity: HIGH
+    rule_id: 2087405f-7898-4774-b905-e2dd7bb61063
+  - file: src/main/resources/application.properties
+    line: null
+    category: INSECURE_DATA_HANDLING
+    severity: HIGH
+    rule_id: 62445210-4ae5-4ea8-bc4f-9962aae532c7

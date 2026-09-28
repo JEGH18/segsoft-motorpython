@@ -1,0 +1,16 @@
+server:
+  ssl:
+    enabled: true
+
+mfa:
+  required:
+    roles:
+      - SECURITY_ADMIN
+
+artifact:
+  checksum:
+    verify: sha256
+
+dependency:
+  update:
+    maxAgeDays: 14
