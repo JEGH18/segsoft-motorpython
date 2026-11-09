@@ -1,0 +1,33 @@
+{
+  "description": "app/reports.py línea 5 tiene dos hallazgos esperados: la regla CRITICAL de f-string y la regla MEDIUM de SELECT * FROM, que también aparece dentro del f-string. Es un caso real, no un error.",
+  "findings": [
+    {
+      "file": "src/main/java/com/example/ReportController.java",
+      "line": 14,
+      "category": "SQL_INJECTION",
+      "severity": "HIGH",
+      "ruleId": "cc24c7f5-cf71-43ef-aa09-a92611bcb9a5"
+    },
+    {
+      "file": "src/main/java/com/example/ReportController.java",
+      "line": 19,
+      "category": "SQL_INJECTION",
+      "severity": "MEDIUM",
+      "ruleId": "c32419fe-bf48-4176-aa72-cea341e51d89"
+    },
+    {
+      "file": "app/reports.py",
+      "line": 5,
+      "category": "SQL_INJECTION",
+      "severity": "CRITICAL",
+      "ruleId": "d5a1d8a6-c05c-4547-8d65-f194775d5036"
+    },
+    {
+      "file": "app/reports.py",
+      "line": 5,
+      "category": "SQL_INJECTION",
+      "severity": "MEDIUM",
+      "ruleId": "c32419fe-bf48-4176-aa72-cea341e51d89"
+    }
+  ]
+}

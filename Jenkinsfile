@@ -1,6 +1,7 @@
 // CI de segsoft-motorpython en el Jenkins de p2tools (pi2tools.icesi.edu.co/jenkins).
 // Equivale a .github/workflows/validate-engine.yml: valida que el motor cumpla los
-// umbrales de precisión y cobertura de validation-thresholds.yml.
+// umbrales de precisión y cobertura de validation-thresholds.yml y publica
+// validation-report.json y validation-report.md como artefactos del build.
 //
 // Requiere en Jenkins: los plugins Pipeline, Docker Pipeline y JUnit, y un agente con Docker.
 pipeline {
@@ -44,6 +45,7 @@ pipeline {
     post {
         always {
             junit testResults: 'reports/validation.xml', allowEmptyResults: true
+            archiveArtifacts artifacts: 'reports/validation-report.*', allowEmptyArchive: true
         }
     }
 }

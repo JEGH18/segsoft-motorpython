@@ -1,0 +1,4 @@
+{
+  "description": "Fixture seguro: ningún hallazgo esperado. Cada línea del código es el equivalente seguro de un patrón vulnerable real (ver UserService.java), para que un 0 aquí mida precisión real y no sea simplemente que no había nada que encontrar.",
+  "findings": []
+}
