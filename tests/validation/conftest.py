@@ -6,10 +6,10 @@ from app.main import app
 
 @pytest.fixture(scope="module")
 def client():
-    """Sobrescribe el `client` de function-scope de tests/conftest.py: este
-    módulo hace ~500 llamadas HTTP contra el motor (23 reglas x archivos del
-    dataset) y las cachea en un fixture module-scoped (engine_run_results),
-    así que el TestClient necesita vivir el módulo completo, no un test."""
+    """Sobrescribe el `client` de function-scope de tests/conftest.py: la
+    suite hace ~500 llamadas HTTP contra el motor (23 reglas x archivos del
+    dataset) y las cachea en un fixture module-scoped (suite), así que el
+    TestClient necesita vivir el módulo completo, no un test."""
     with TestClient(app) as test_client:
         yield test_client
 
@@ -17,7 +17,7 @@ def client():
 @pytest.fixture(scope="module", autouse=True)
 def _set_token_env_module():
     """Versión module-scoped de _set_token_env (tests/conftest.py es
-    function-scoped) -- necesaria porque engine_run_results es module-scoped
+    function-scoped) -- necesaria porque suite es module-scoped
     y no puede depender de un fixture de menor scope."""
     import os
 

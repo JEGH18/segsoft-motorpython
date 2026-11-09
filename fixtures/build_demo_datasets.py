@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Empaqueta los fixtures de reference-repos/ en 3 ZIPs listos para subir a
+"""Empaqueta los fixtures de tests/fixtures/reference-repos/ en 3 ZIPs listos para subir a
 SegSoft (POST /api/v1/repositories, multipart "file") y mostrarle al tutor
 los 3 datasets por severidad que pidió: sano / con warnings / con fallas
 graves. Uso:
@@ -20,12 +20,12 @@ import zipfile
 from pathlib import Path
 
 FIXTURES_DIR = Path(__file__).resolve().parent
-REPOS_DIR = FIXTURES_DIR / "reference-repos"
+REPOS_DIR = FIXTURES_DIR.parent / "tests" / "fixtures" / "reference-repos"
 
 
 def _add_dir(zf: zipfile.ZipFile, source_dir: Path, arc_prefix: str) -> None:
     for path in sorted(source_dir.rglob("*")):
-        if path.is_file() and path.name != "expected_findings.yml":
+        if path.is_file() and path.name != "expected.json":
             arcname = f"{arc_prefix}/{path.relative_to(source_dir)}"
             zf.write(path, arcname)
 
@@ -34,8 +34,8 @@ def build(out_dir: Path) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     with zipfile.ZipFile(out_dir / "dataset-sano.zip", "w", zipfile.ZIP_DEFLATED) as zf:
-        _add_dir(zf, REPOS_DIR / "java-clean", "java")
-        _add_dir(zf, REPOS_DIR / "python-clean", "python")
+        _add_dir(zf, REPOS_DIR / "secure" / "java-clean", "java")
+        _add_dir(zf, REPOS_DIR / "secure" / "python-clean", "python")
 
     with zipfile.ZipFile(out_dir / "dataset-warnings.zip", "w", zipfile.ZIP_DEFLATED) as zf:
         _add_dir(zf, FIXTURES_DIR / "demo-warnings-only", ".")
@@ -48,7 +48,7 @@ def build(out_dir: Path) -> None:
             "insecure-data-handling",
             "dependency-vulnerability",
         ):
-            _add_dir(zf, REPOS_DIR / name, name)
+            _add_dir(zf, REPOS_DIR / "vulnerable" / name, name)
 
     for zip_path in sorted(out_dir.glob("dataset-*.zip")):
         print(f"{zip_path} ({zip_path.stat().st_size} bytes)")
