@@ -22,6 +22,8 @@ class RuleExecutionErrorResponse(BaseModel):
     message: str
     stacktraceHash: str
     errorCode: str
+    # Set by the batch endpoint, so the backend knows which file the error belongs to.
+    filePath: Optional[str] = None
 
 
 class ExecuteRuleResponse(BaseModel):

@@ -13,11 +13,9 @@ dependencies = [
     "httpx>=0.27.0",
     "pydantic>=2.7.0",
     "structlog>=24.1.0",
-    "tree-sitter>=0.22.0",
     "pyyaml>=6.0.1",
-    "jsonschema>=4.22.0",
-    "tenacity>=8.3.0",
-    "pip-audit>=2.7.3",
+    # Regex matching with a real timeout that releases the GIL (see app/executors/limits.py).
+    "regex>=2024.5.15",
 ]
 
 [project.optional-dependencies]

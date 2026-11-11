@@ -3,6 +3,7 @@ import os
 import yaml
 
 from app.executors.base import RuleExecutor
+from app.executors.limits import Deadline, compile_pattern, search
 
 # Extensiones que realmente pueden ser un archivo de configuración. Sin este
 # filtro, execute() trataba CUALQUIER archivo del repo (un .java, un .jsx, un
@@ -24,6 +25,10 @@ class ConfigExecutor(RuleExecutor):
           {"key": "ALLOWED_HOSTS", "pattern": "\\*"}
         ]
       }
+    A key matches either the full dotted path of a value ("spring.jpa.show-sql") or, for nested
+    YAML, its trailing segments ("show-sql", "jpa.show-sql"). Every matching value is checked, so
+    two settings that share a last segment ("app.password" and "spring.datasource.password") no
+    longer hide each other.
     """
 
     def execute(self, payload: dict, artifact_path: str) -> list:
@@ -39,41 +44,51 @@ class ConfigExecutor(RuleExecutor):
         except Exception:
             return []
 
+        deadline = Deadline()
         findings = []
         for check in checks:
             key = check.get("key", "")
-            value = config.get(key)
+            values = self._values_for(config, key)
 
-            if check.get("must_exist") and value is None:
+            if check.get("must_exist") and not values:
                 findings.append({
                     "filePath": artifact_path,
                     "lineNumber": None,
                     "evidenceSnippet": f"Required key '{key}' not found",
                 })
 
-            if "not_value" in check and str(value).lower() == str(check["not_value"]).lower():
-                findings.append({
-                    "filePath": artifact_path,
-                    "lineNumber": None,
-                    "evidenceSnippet": f"{key}={value}",
-                })
-
-            if "pattern" in check and value is not None:
-                import re
-                if re.search(check["pattern"], str(value)):
+            for full_key, value in values:
+                if "not_value" in check and str(value).lower() == str(check["not_value"]).lower():
                     findings.append({
                         "filePath": artifact_path,
                         "lineNumber": None,
-                        "evidenceSnippet": f"{key}={value}",
+                        "evidenceSnippet": f"{full_key}={value}",
                     })
 
+                if "pattern" in check and value is not None:
+                    if search(compile_pattern(check["pattern"]), str(value), deadline):
+                        findings.append({
+                            "filePath": artifact_path,
+                            "lineNumber": None,
+                            "evidenceSnippet": f"{full_key}={value}",
+                        })
+
         return findings
+
+    @staticmethod
+    def _values_for(config: dict, key: str) -> list[tuple[str, object]]:
+        if not key:
+            return []
+        if key in config:
+            return [(key, config[key])]
+        suffix = "." + key
+        return [(full_key, value) for full_key, value in config.items() if full_key.endswith(suffix)]
 
     def _load_config(self, path: str, ext: str) -> dict:
         if ext in (".yml", ".yaml"):
             with open(path, "r", encoding="utf-8", errors="replace") as fh:
                 data = yaml.safe_load(fh) or {}
-            return self._flatten(data)
+            return self._flatten(data) if isinstance(data, dict) else {}
 
         result = {}
         with open(path, "r", encoding="utf-8", errors="replace") as fh:
@@ -89,10 +104,9 @@ class ConfigExecutor(RuleExecutor):
     def _flatten(self, d: dict, prefix: str = "") -> dict:
         result = {}
         for k, v in d.items():
-            full_key = f"{prefix}.{k}" if prefix else k
+            full_key = f"{prefix}.{k}" if prefix else str(k)
             if isinstance(v, dict):
                 result.update(self._flatten(v, full_key))
             else:
                 result[full_key] = v
-                result[k] = v  # also index by last segment
         return result

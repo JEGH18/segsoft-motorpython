@@ -1,11 +1,12 @@
 import re
 from typing import Optional
 
+# Group 1 keeps the key and the separator (and an opening quote, if any); the value is masked.
 _SENSITIVE_PATTERNS = [
-    r"(api[_-]?key\s*[=:]\s*)[^\s,;]+",
-    r"(secret\s*[=:]\s*)[^\s,;]+",
-    r"(password\s*[=:]\s*)[^\s,;]+",
-    r"(token\s*[=:]\s*)[^\s,;]+",
+    r"(api[_-]?key[\"']?\s*[=:]\s*[\"']?)[^\s,;\"']+",
+    r"(secret(?:[_-]?key)?[\"']?\s*[=:]\s*[\"']?)[^\s,;\"']+",
+    r"(passw(?:or)?d[\"']?\s*[=:]\s*[\"']?)[^\s,;\"']+",
+    r"(token[\"']?\s*[=:]\s*[\"']?)[^\s,;\"']+",
 ]
 
 

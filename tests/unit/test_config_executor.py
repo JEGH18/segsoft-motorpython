@@ -109,3 +109,35 @@ def test_must_exist_ignores_dependency_manifests():
         assert findings == []
     finally:
         os.unlink(path)
+
+
+def test_keys_sharing_a_last_segment_are_all_checked():
+    """_flatten used to index every value also by its last segment, so
+    'spring.datasource.password' overwrote 'app.password' (or the other way
+    around) and only one of them was ever checked."""
+    content = "app:\n  password: changeme\nspring:\n  datasource:\n    password: s3cure!\n"
+    path = _file(content, suffix=".yml")
+    try:
+        findings = executor.execute(
+            {"checks": [{"key": "password", "not_value": "changeme"}]}, path
+        )
+        assert [f["evidenceSnippet"] for f in findings] == ["app.password=changeme"]
+
+        findings = executor.execute(
+            {"checks": [{"key": "password", "pattern": "."}]}, path
+        )
+        assert len(findings) == 2
+    finally:
+        os.unlink(path)
+
+
+def test_full_dotted_key_matches_only_that_setting():
+    content = "app:\n  debug: true\nlogging:\n  debug: false\n"
+    path = _file(content, suffix=".yml")
+    try:
+        findings = executor.execute(
+            {"checks": [{"key": "logging.debug", "not_value": "true"}]}, path
+        )
+        assert findings == []
+    finally:
+        os.unlink(path)

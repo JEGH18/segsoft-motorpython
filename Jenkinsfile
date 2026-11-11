@@ -35,6 +35,12 @@ pipeline {
             }
         }
 
+        stage('Pruebas unitarias') {
+            steps {
+                sh '.venv/bin/pytest tests/ --ignore=tests/validation -v --junitxml=reports/unit.xml'
+            }
+        }
+
         stage('Validación de precisión y cobertura') {
             steps {
                 sh '.venv/bin/pytest tests/validation/ -v --junitxml=reports/validation.xml'
@@ -44,7 +50,7 @@ pipeline {
 
     post {
         always {
-            junit testResults: 'reports/validation.xml', allowEmptyResults: true
+            junit testResults: 'reports/*.xml', allowEmptyResults: true
             archiveArtifacts artifacts: 'reports/validation-report.*', allowEmptyArchive: true
         }
     }

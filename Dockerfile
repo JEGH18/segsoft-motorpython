@@ -14,5 +14,8 @@ RUN chown -R pdgseg:pdgseg /app \
     && chown pdgseg:pdgseg /tmp/pdgseg-sandbox
 USER pdgseg
 
+# The engine only reads files inside this directory (app/security/sandbox.py).
+ENV SANDBOX_ROOT=/tmp/pdgseg-sandbox
+
 EXPOSE 8001
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]

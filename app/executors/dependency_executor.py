@@ -36,17 +36,47 @@ class DependencyExecutor(RuleExecutor):
             pass
         return []
 
+    _POM_NS = "{http://maven.apache.org/POM/4.0.0}"
+    _PROPERTY_REF = re.compile(r"\$\{([^}]+)\}")
+
+    def _maven_properties(self, root) -> dict:
+        """<properties> of the pom plus project.version / project.parent.version."""
+        ns = self._POM_NS
+        props = {}
+        properties = root.find(f"{ns}properties")
+        if properties is not None:
+            for prop in properties:
+                if isinstance(prop.tag, str) and prop.tag.startswith(ns):
+                    props[prop.tag[len(ns):]] = (prop.text or "").strip()
+        parent_version = (root.findtext(f"{ns}parent/{ns}version") or "").strip()
+        project_version = (root.findtext(f"{ns}version") or "").strip() or parent_version
+        if project_version:
+            props.setdefault("project.version", project_version)
+            props.setdefault("pom.version", project_version)
+        if parent_version:
+            props.setdefault("project.parent.version", parent_version)
+        return props
+
+    def _resolve_maven_version(self, version: str, props: dict) -> str:
+        # A few rounds cover properties defined in terms of other properties.
+        for _ in range(5):
+            if "${" not in version:
+                break
+            version = self._PROPERTY_REF.sub(lambda m: props.get(m.group(1), m.group(0)), version)
+        return "" if "${" in version else version
+
     def _check_maven(self, vulns: list, path: str) -> list:
         findings = []
         try:
             tree = ElementTree.parse(path)
-            ns = {"m": "http://maven.apache.org/POM/4.0.0"}
             root = tree.getroot()
+            props = self._maven_properties(root)
 
             for dep in root.iter("{http://maven.apache.org/POM/4.0.0}dependency"):
                 group = (dep.findtext("{http://maven.apache.org/POM/4.0.0}groupId") or "").strip()
                 artifact = (dep.findtext("{http://maven.apache.org/POM/4.0.0}artifactId") or "").strip()
-                version = (dep.findtext("{http://maven.apache.org/POM/4.0.0}version") or "").strip()
+                version = self._resolve_maven_version(
+                    (dep.findtext("{http://maven.apache.org/POM/4.0.0}version") or "").strip(), props)
 
                 for vuln in vulns:
                     if vuln.get("ecosystem") != "maven":

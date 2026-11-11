@@ -80,3 +80,25 @@ def test_empty_known_vulnerable_list_returns_empty():
         assert findings == []
     finally:
         import shutil; shutil.rmtree(os.path.dirname(path))
+
+
+def test_maven_version_from_property_is_resolved(tmp_path):
+    pom = tmp_path / "pom.xml"
+    pom.write_text(
+        '<project xmlns="http://maven.apache.org/POM/4.0.0">'
+        "<properties><struts.version>2.5.10</struts.version></properties>"
+        "<dependencies><dependency><groupId>org.apache.struts</groupId>"
+        "<artifactId>struts2-core</artifactId><version>${struts.version}</version>"
+        "</dependency></dependencies></project>",
+        encoding="utf-8",
+    )
+    from app.executors.dependency_executor import DependencyExecutor
+
+    findings = DependencyExecutor().execute(
+        {"known_vulnerable": [{"ecosystem": "maven", "group": "org.apache.struts",
+                               "artifact": "struts2-core", "below_version": "2.5.33",
+                               "cve": "CVE-2021-31805"}]},
+        str(pom),
+    )
+    assert len(findings) == 1
+    assert "2.5.10" in findings[0]["evidenceSnippet"]
