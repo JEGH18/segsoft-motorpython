@@ -105,10 +105,10 @@ def _run_on_files(registry, rule_type, payload, paths, rule_id, logger, batch_de
                 raw_findings.append(finding)
         except ControlledRuleError as exc:
             errors.append(_error_from_exception(rule_id, exc.error_type, exc.message, traceback.format_exc(), path))
-            logger.warning("execute_rule_controlled_error", errorType=exc.error_type, message=exc.message)
+            logger.warning("execute_rule_controlled_error", errorType=exc.error_type, detail=exc.message, filePath=path)
         except Exception as exc:  # noqa: BLE001
             errors.append(_error_from_exception(rule_id, "UNEXPECTED_ERROR", str(exc), traceback.format_exc(), path))
-            logger.exception("execute_rule_unexpected_error", message=str(exc))
+            logger.exception("execute_rule_unexpected_error", detail=str(exc), filePath=path)
 
     return raw_findings, errors
 
